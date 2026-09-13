@@ -1,0 +1,14 @@
+Package: com.miro.uyou
+Name: uYou
+Depends: firmware (>=13.0), mobilesubstrate, com.miro.uyouimport
+Conflicts: com.miro.easyyt, com.miro.ytnoshorts, com.ps.noytpremium, com.ps.youarethere, com.miro.uyourootless
+Depiction: https://miro92.com/repo/depictions/?p=com.miro.uyou
+Description: Enhance Your YouTube Experience
+Maintainer: MiRO <tweaks_support@miro92.com>
+Author: MiRO <tweaks_support@miro92.com>
+Section: Tweaks
+Tag: purpose::extension, compatible_min::ios13
+Icon: file:////Library/Application Support/uYouBundle.bundle/icon_clipped.png
+Architecture: iphoneos-arm
+Version: 3.0.4
+Installed-Size: 31212
