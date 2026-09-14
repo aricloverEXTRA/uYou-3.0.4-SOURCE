@@ -1,7 +1,7 @@
 Package: com.miro.uyouunofficial
 Name: uYou Unofficial
 Depends: firmware (>=13.0), mobilesubstrate, com.miro.uyouimport
-Conflicts: com.miro.easyyt, com.miro.ytnoshorts, com.ps.noytpremium, com.ps.youarethere, com.miro.uyourootless, com.miro.uyou
+Conflicts: com.miro.easyyt, com.miro.ytnoshorts, com.ps.noytpremium, com.ps.youarethere, com.miro.uyourootless
 Depiction: https://miro92.com/repo/depictions/?p=com.miro.uyou
 Description: Enhance Your YouTube Experience
 Maintainer: aricloverEXTRA
