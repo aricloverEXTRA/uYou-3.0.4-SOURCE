@@ -1,0 +1,249 @@
+/* uYou tab */
+"The best tweak for the YouTube app" = "The best tweak for YouTube";
+"Download Videos/Audio" = "Download Videos/Audio";
+"Save your favorite videos for offline playback." = "Save your favorite videos for offline playback.";
+"Play Saved Media" = "Play Saved Media";
+"Play your saved media in a custom player with background playback support and mini player." = "Play your saved media in a custom player with background playback support and mini player.";
+"More Options" = "More Options";
+"Play YouTube videos in the background and more, You can configure options from the settings." = "Play YouTube videos in the background and more. You can configure options from the settings.";
+"FollowMe" = "Follow me on Twitter";
+"Continue" = "Continue";
+
+/* uYou tab */
+"Downloading" = "Downloading";
+"All" = "All";
+"Video" = "Video";
+"Videos" = "Videos";
+"Audio" = "Audio";
+"Audios" = "Audios";
+"TOTAL" = "TOTAL";
+"DOWNLOADING" = "DOWNLOADING";
+
+"Sorting" = "Sorting";
+"Video Title (Ascending)" = "Video Title (Ascending)";
+"Video Title (Descending)" = "Video Title (Descending)";
+"Download Date (Ascending)" = "Download Date (Ascending)";
+"Download Date (Descending)" = "Download Date (Descending)";
+
+"Audio Only" = "Audio Only";
+"Audio Only (mp4)" = "Audio Only (mp4)";
+"Downloading..." = "Downloading...";
+"Adding Metadata to the M4A.." = "Adding Metadata to the M4A...";
+"Waiting..." = "Waiting...";
+"Waiting for download..." = "Waiting for download...";
+"Paused" = "Paused";
+"Completed" = "Completed";
+"Play on YouTube" = "Play on YouTube";
+"Open Channel" = "Open Channel";
+"Rename" = "Rename";
+"Cancel" = "Cancel";
+"Done" = "Done";
+"Select All" = "Select All";
+"Share" = "Share";
+"Export to Music app" = "Export to Music app";
+"Export to Camera Roll" = "Export to Camera Roll";
+"Change Image" = "Change Image";
+"Change Thumbnail" = "Change Thumbnail";
+"Download Original Thumbnail" = "Download Original Thumbnail";
+"Save Thumbnail to Camera Roll" = "Save Thumbnail to Camera Roll";
+"Save Album Art to Camera Roll" = "Save Album Art to Camera Roll";
+"Open in Filza" = "Open in Filza";
+"Lyrics feature will be available soon" = "Lyrics feature will be available soon";
+"Delete" = "Delete";
+"Confirm" = "Confirm";
+"Copy Video Link" = "Copy Video Link";
+"Copy Audio Link" = "Copy Audio Link";
+"Cancel Download" = "Cancel Download";
+"DeleteVideo" = "Are you sure you want to delete"; //Output text will look like: Are you sure you want to delete (Video name)?
+"DeleteFilesCount" = "Are you sure you want to delete selected files"; //Output text will look like: Are you sure you want to delete selected files (5)?
+"SelectedFilesCount" = "Selected files"; //Output text will look like: Selected files (5).
+"Select All" = "Select All";
+"Thumbnail" = "Thumbnail";
+"Lyrics feature will be available soon" = "Lyrics feature will be available soon";
+"I Understand" = "I Understand";
+"Save Image" = "Save Image";
+"Save Gif" = "Save Gif";
+
+/* Import to Music */
+"Import" = "Import";
+"Change Artwork Image" = "Change Artwork Image";
+"IMPORT INFO" = "IMPORT INFO";
+"Explicit" = "Explicit";
+"Kind" = "Kind";
+"Title" = "Title";
+"Channel"  = "Channel";
+"Album" = "Album";
+"Artist" = "Artist";
+"Year" = "Year";
+
+/* + button */
+"Please, paste the YouTube link or Video ID to start download" = "Please, paste the YouTube link or Video ID to start download";
+"YouTube URL or Video ID" = "YouTube URL or Video ID";
+"Download" = "Download";
+
+/* Popups */
+"Loading" = "Loading";
+"Download Started" = "Download started";
+"Saved!" = "Saved!";
+"Error!" = "Error!";
+"uYou did not find any quality to download" = "uYou did not find any quality to download";
+"No links found" = "No links found";
+"Exported successfully" = "Exported successfully";
+"Renamed successfully" = "Renamed successfully";
+"Downloading Thumbnail" = "Downloading Thumbnail";
+"Photo library access is disabled. Please give YouTube permission to access your photos library." = "Photo library access is disabled. Please give YouTube permission to access your photos library.";
+"Image updated successfully" = "Image updated successfully";
+"Invalid YouTube link" = "Invalid YouTube link";
+
+/* Download status */
+"Merging video with audio into MP4..." = "Merging video with audio into MP4...";
+"Adding Metadata to the M4A..." = "Adding Metadata to the M4A...";
+"Merging video with audio into MKV..." = "Merging video with audio into MKV...";
+"Converting MKV video into MP4..." = "Converting MKV video into MP4...";
+"Error: Conversion cancelled by user" = "Error: Conversion cancelled by user";
+"ConversionFailedWithCode" = "Error: Conversion failed with code";
+
+/* Settings */
+"uYouSettings" = "Show uYou settings";
+"Show Formats" = "Show Formats";
+
+"Download Quality" = "Download Quality";
+"Always Ask" = "Always Ask";
+"YT Video Quality on WiFi" = "YT Video Quality on WiFi";
+"YT Video Quality on Cellular" = "YT Video Quality on Cellular";
+"Default Playback Speed" = "Default Playback Speed";
+"Auto" = "Auto";
+
+"Videos Download Location" = "Videos Download Location";
+"uYou Folder Only" = "uYou Folder Only";
+"Camera Roll Only" = "Camera Roll Only";
+"Both" = "Both";
+
+"Player Gestures Controls" = "Player Gestures Controls";
+"SPLITTED AREAS" = "SPLITTED AREAS";
+"Top Area" = "Top Area";
+"Center Area" = "Center Area";
+"Bottom Area" = "Bottom Area";
+"Volume" = "Volume";
+"Brightness" = "Brightness";
+"Seek" = "Seek";
+
+"SPEED & SENSITIVITY" = "SPEED & SENSITIVITY";
+"Speed" = "Speed";
+"Activation Sensitivity" = "Activation Sensitivity";
+"Default Speed = 250.\nDefault Sensitivity = 70.\nSensitivity: Adjusts the amount of finger movement required to activate the gesture on the video player." = "Default Speed = 250.\nDefault Sensitivity = 70.\nSensitivity: Adjusts the amount of finger movement required to activate the gesture on the video player.";
+
+"If the selected quality is not available, then uYou will choose a lower quality than the one you selected." = "If the selected quality is not available, then uYou will choose a lower quality than the one you selected.";
+
+"YOUTUBE SETTINGS" = "YOUTUBE SETTINGS";
+"Default Startup Page" = "Default Startup Page";
+"Default" = "Default";
+"Create" = "Create";
+"Subscriptions" = "Subscriptions";
+"You/Library" = "You/Library";
+"Explore" = "Explore";
+"Trending" = "Trending";
+
+"Hide Tabs" = "Hide Tabs";
+"YT Tabs" = "YT Tabs";
+"Hide uYou Tab" = "Hide uYou Tab";
+"Hide Shorts Tab" = "Hide Shorts Tab";
+"Hide Create Tab" = "Hide Create Tab";
+"Hide Subscriptions Tab" = "Hide Subscriptions Tab";
+"Hide You/Library Tab" = "Hide You/Library Tab";
+"Hide Trending Tab" = "Hide Trending Tab";
+"Hide Explore Tab" = "Hide Explore Tab";
+"Changing settings requires restarting the YouTube app." = "Changing settings requires restarting the YouTube app.";
+
+"Home" = "Home";
+"Disable Auto Play Video" = "Disable Auto Play Video";
+"Disable Auto Caption" = "Disable Auto Caption";
+"Hide Cast Button" = "Hide Cast Button";
+"Hide Notification Button" = "Hide Notification Button";
+"Ask Befor Casting" = "Ask Before Casting";
+"Confirm Casting" = "Confirm Casting";
+"Are you sure you want to start casting?" = "Are you sure you want to start casting?";
+"Yes" = "Yes";
+"No" = "No";
+"Hide Shorts Cells" = "Hide Shorts Cells";
+"Disable Startup To Shorts" = "Disable Startup To Shorts";
+
+"Hide uYou Button" = "Hide uYou Button";
+"Hide Fullscreen Button" = "Hide Fullscreen Button";
+"Hide Title and Channel Name" = "Hide Title and Channel Name";
+"Hide All Buttons" = "Hide All Buttons";
+"Hide Like Button" = "Hide Like Button";
+"Hide Dislike Button" = "Hide Dislike Button";
+"Hide Comment Button" = "Hide Comment Button";
+"Hide Remix Button" = "Hide Remix Button";
+"Hide Share Button" = "Hide Share Button";
+"Always Show Progress Bar" = "Always Show Progress Bar";
+
+"Video Player" = "Video Player";
+"uYou Repeat" = "uYou Repeat";
+"uYou Fullscreen to The Right" = "uYou Fullscreen to The Right";
+"Playback Speed Controls" = "Playback Speed Controls";
+"Disable Double Tap To Seek" = "Disable Double Tap To Seek";
+"Auto Play Videos in Fullscreen" = "Auto Play Videos in Fullscreen";
+"No Suggested Videos at The Video End" = "No Suggested Videos at The Video End";
+"Fullscreen Always on The Right Side" = "Fullscreen Always on The Right Side";
+"uYou Gestures Controls" = "uYou Gestures Controls";
+"Two Fingers Tap to Pause/Play" = "Two Fingers Tap to Pause/Play";
+"Hide Next/Previous Buttons" = "Hide Next/Previous Buttons";
+"Replace Next with Fast Forward" = "Replace Next with Fast Forward";
+"uYou Gesture Controls: This feature allows you to drag your finger left or right on the top, center or bottom of the video screen to adjust the volume, brightness, or seek the video. Changing settings requires restarting the YouTube app." = "uYou Gesture Controls: This feature allows you to drag your finger left or right on the top, center or bottom of the video screen to adjust the volume, brightness, or seek the video. Changing settings requires restarting the YouTube app.";
+
+"Reorder Tabs" = "Reorder Tabs";
+"ReorderTabs" = "Reorder Tabs";
+
+"Other Settings" = "Other Settings";
+"Remove YouTube Ads" = "Remove YouTube Ads";
+"Background Playback" = "Background Playback";
+"Allow HD On Cellular Data" = "Allow HD On Cellular Data";
+"Disable Age Restriction" = "Disable Age Restriction";
+"iPad Layout" = "iPad Layout";
+"Disable \"Video paused. Continue watching?\"" = "Disable \"Video paused. Continue watching?\"";
+
+"OTHERS" = "OTHERS";
+"Open Downloads Folder in Filza" = "Open Downloads Folder in Filza";
+"Import From Cercube" = "Import From Cercube";
+"You can easily migrate all of your videos/audios from \"Cercube\" to \"uYou\" with a tap of a button!\n\nPlease choose one of the following:" = "You can easily migrate all of your videos/audios from \"Cercube\" to \"uYou\" with a tap of a button!\n\nPlease choose one of the following:";
+"Import From DLEasy" = "Import From DLEasy";
+"You can easily migrate all of your videos/audios from \"DLEasy\" to \"uYou\" with a tap of a button!\n\nPlease choose one of the following:" = "You can easily migrate all of your videos/audios from \"DLEasy\" to \"uYou\" with a tap of a button!\n\nPlease choose one of the following:";
+"Please choose one of the following:" = "Please choose one of the following:";
+"Copy All" = "Copy All";
+"Move All" = "Move All";
+"Importing" = "Importing";
+
+"Clear Downloading" = "Clear Downloading";
+"Are you sure you want to clear all currently downloading videos and audios?" = "Are you sure you want to clear all currently downloading videos and audios?";
+
+"Clear Downloaded" = "Clear Downloaded";
+"Are you sure you want to clear all currently downloaded videos and audios?" = "Are you sure you want to clear all currently downloaded videos and audios?";
+
+"Clear All" = "Clear All";
+"Are you sure you want to clear all currently downloading and downloaded videos and audios?" = "Are you sure you want to clear all currently downloading and downloaded videos and audios?";
+
+"UYOU UPDATES" = "UYOU UPDATES";
+"Automatically Check For Updates" = "Automatically Check For Updates";
+"Check For Update" = "Check For Update";
+"UpToDate" = "You're using v.%@ which is the latest version.";
+"NewVersionOld" = "v.%@ is now available. Please make sure to always updating to the latest version to ensure having a flawless/uninterrupted experience."; 
+"NewVersion" = "Current version v.%@\nAvailable version v.%@\n\nPlease update to the latest version for the best experience."; 
+"Unsupported YouTube Version" = "Unsupported YouTube Version";
+"UnsupportedVersionText" = "Your YouTube app version (%@) is not supported by uYou. For optimal performance, please update YouTube to at least version (%@)+. While you can continue to use the current version, please be aware that I cannot provide support for any crashes or issues that may occur.\n\nThank you for your understanding.";
+
+"SKIP" = "SKIP";
+"DON'T SHOW" = "DON'T SHOW";
+"DISMISS" = "DISMISS";
+"UPDATE NOW" = "UPDATE NOW";
+
+"SOCIAL MEDIA" = "SOCIAL MEDIA";
+"Developer" = "Developer";
+"Support my" = "Support my";
+"Developments" = "developments by";
+"Donating" = "Donating";
+"You can support my iOS development by donating 🥰\n\n\"It’s not how much we give, but how much love we put into giving.\"\nMother Teresa" = "You can support my iOS development by donating 🥰\n\n\"It’s not how much we give, but how much love we put into giving.\"\nMother Teresa";
+"Designer" = "Designer"; 
+"Follow me on social media." = "Follow me on social media.";
+"Coded with ❤️ by MiRO\nCopyright © 2024" = "Coded with ❤️ by MiRO\nCopyright © 2024";
