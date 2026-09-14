@@ -68,4 +68,10 @@
     [self loadDownloads];
 }
 
+- (void)updatePageStyles {
+    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    _tableView.backgroundColor = [UIColor systemBackgroundColor];
+    [_tableView reloadData];
+}
+
 @end

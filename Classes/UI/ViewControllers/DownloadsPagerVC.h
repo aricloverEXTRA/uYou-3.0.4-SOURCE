@@ -12,7 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) DownloadedVC *downloadedVC;
 
 - (instancetype)init;
+- (NSArray<UIViewController *> *)viewControllers;
+- (void)updatePageStyles;
+- (void)viewPager:(id)viewPager didChangeTabToIndex:(NSUInteger)idx fromTabIndex:(NSUInteger)fromIdx;
 
 @end
+void UYouRefreshAppearance(void);
 
 NS_ASSUME_NONNULL_END

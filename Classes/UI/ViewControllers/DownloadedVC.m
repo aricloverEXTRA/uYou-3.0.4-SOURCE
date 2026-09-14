@@ -53,7 +53,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    // Play downloaded video
+}
+
+- (void)updatePageStyles {
+    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    _tableView.backgroundColor = [UIColor systemBackgroundColor];
+    [_tableView reloadData];
 }
 
 @end

@@ -2,6 +2,9 @@
 #import "DownloadingVC.h"
 #import "DownloadedVC.h"
 
+static DownloadsPagerVC *gDownloadsPagerVC = nil;
+static NSUInteger gSelectedTabIndex = 0;
+
 @interface DownloadsPagerVC () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) UISegmentedControl *segmentedControl;
@@ -14,8 +17,47 @@
     self = [super init];
     if (self) {
         self.title = @"Downloads";
+        gDownloadsPagerVC = self;
     }
     return self;
+}
+
+- (void)viewPager:(id)viewPager didChangeTabToIndex:(NSUInteger)idx fromTabIndex:(NSUInteger)fromIdx {
+    gSelectedTabIndex = idx;
+}
+
+- (NSArray<UIViewController *> *)viewControllers {
+    NSMutableArray *arr = [NSMutableArray array];
+    if (_downloadingVC) [arr addObject:_downloadingVC];
+    if (_downloadedVC) [arr addObject:_downloadedVC];
+    return arr;
+}
+
+- (void)updatePageStyles {
+    [super updateViewConstraints];
+    for (UIViewController *vc in self.viewControllers) {
+        if ([vc respondsToSelector:@selector(updatePageStyles)]) [vc performSelector:@selector(updatePageStyles)];
+        if ([vc respondsToSelector:@selector(tableView)]) {
+            UITableView *tv = [vc performSelector:@selector(tableView)];
+            for (UITableViewCell *cell in tv.visibleCells) if ([cell respondsToSelector:@selector(updatePageStyles)]) [cell performSelector:@selector(updatePageStyles)];
+        }
+    }
+    for (UIView *sub in self.view.subviews) if ([sub isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *tabs = (UIScrollView *)sub;
+        NSUInteger i = 0;
+        for (UIView *item in tabs.subviews) if ([item isKindOfClass:[UILabel class]]) {
+            UILabel *lab = (UILabel *)item;
+            if (i != gSelectedTabIndex) {
+                @try { [lab setTextColor:[UILabel performSelector:@selector(_defaultColor)]]; } @catch (id e) {}
+            }
+            i++;
+        }
+    }
+}
+
+void UYouRefreshAppearance(void) {
+    if (!gDownloadsPagerVC) return;
+    @try { [gDownloadsPagerVC updatePageStyles]; } @catch (NSException *e) {}
 }
 
 - (void)viewDidLoad {

@@ -50,4 +50,9 @@
     return self;
 }
 
+- (void)updatePageStyles {
+    self.backgroundColor = [UIColor systemBackgroundColor];
+    self.contentView.backgroundColor = [UIColor systemBackgroundColor];
+}
+
 @end

@@ -7,6 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UITableView *tableView;
 
 - (instancetype)init;
+- (void)updatePageStyles;
 
 @end
 
