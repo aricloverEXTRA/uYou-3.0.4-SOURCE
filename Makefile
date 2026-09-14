@@ -6,12 +6,12 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = uYou
 
-# Core source files
-uYou_FILES = $(wildcard Classes/**/*.m) $(wildcard Classes/**/*.mm) $(filter-out Vendor/LNPopup/LNPopupControllerExample/% Vendor/Lottie/Example% Vendor/Lottie/Example-Swift/% Vendor/Lottie/lottie-ios/% Vendor/Lottie/MacOS_Viewer/% Vendor/SDWebImage/Examples/% Vendor/SDWebImage/Tests/% Vendor/AFNetworking/Example/% Vendor/AFNetworking/Tests/% Vendor/AFNetworking/UIKit+AFNetworking/% Vendor/GCDWebServer/Tests/% Vendor/FMDB/Tests/% Vendor/SDWebImage/NSBezierPath+SDRoundedCorners.m Vendor/SDWebImage/NSButton+WebCache.m Vendor/SDWebImage/NSImage+Compatibility.m Vendor/SDWebImage/SDAnimatedImageRep.m Vendor/SDWebImage/SDWebImageMapKit/% Vendor/SDWebImage/MKAnnotationView+WebCache.m Vendor/SDWebImage/FLAnimatedImage/%,$(wildcard Vendor/**/*.m) $(wildcard Vendor/**/*.mm))
+# Core source files (Classes + baked pipeline)
+uYou_FILES = $(wildcard Classes/**/*.m) $(wildcard Classes/**/*.mm) $(wildcard Sources/*.xm) $(wildcard Sources/*.m) Sources/MediaKit/UYTMediaKit.m $(filter-out Vendor/LNPopup/LNPopupControllerExample/% Vendor/Lottie/Example% Vendor/Lottie/Example-Swift/% Vendor/Lottie/lottie-ios/% Vendor/Lottie/MacOS_Viewer/% Vendor/SDWebImage/Examples/% Vendor/SDWebImage/Tests/% Vendor/AFNetworking/Example/% Vendor/AFNetworking/Tests/% Vendor/AFNetworking/UIKit+AFNetworking/% Vendor/GCDWebServer/Tests/% Vendor/FMDB/Tests/% Vendor/SDWebImage/NSBezierPath+SDRoundedCorners.m Vendor/SDWebImage/NSButton+WebCache.m Vendor/SDWebImage/NSImage+Compatibility.m Vendor/SDWebImage/SDAnimatedImageRep.m Vendor/SDWebImage/SDWebImageMapKit/% Vendor/SDWebImage/MKAnnotationView+WebCache.m Vendor/SDWebImage/FLAnimatedImage/%,$(wildcard Vendor/**/*.m) $(wildcard Vendor/**/*.mm))
 
 
-uYou_CFLAGS = -fobjc-arc -Wno-deprecated-declarations -Wno-unused-variable -Wno-unused-function
-uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Classes -I$(THEOS_PROJECT_DIR)/Classes/Core -I$(THEOS_PROJECT_DIR)/Classes/Core/Downloads -I$(THEOS_PROJECT_DIR)/Classes/Core/Gestures -I$(THEOS_PROJECT_DIR)/Classes/Core/Models -I$(THEOS_PROJECT_DIR)/Classes/Core/Player -I$(THEOS_PROJECT_DIR)/Classes/Core/Settings -I$(THEOS_PROJECT_DIR)/Classes/Core/Utils -I$(THEOS_PROJECT_DIR)/Classes/Core/Welcome -I$(THEOS_PROJECT_DIR)/Classes/UI -I$(THEOS_PROJECT_DIR)/Classes/UI/Cells -I$(THEOS_PROJECT_DIR)/Classes/UI/ViewControllers -I$(THEOS_PROJECT_DIR)/Classes/UI/Views -I$(THEOS_PROJECT_DIR)/Vendor
+uYou_CFLAGS = -fobjc-arc -Wno-deprecated-declarations -Wno-unused-variable -Wno-unused-function -DTWEAK_VERSION=\"3.0.6-unofficial\"
+uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Classes -I$(THEOS_PROJECT_DIR)/Classes/Core -I$(THEOS_PROJECT_DIR)/Classes/Core/Downloads -I$(THEOS_PROJECT_DIR)/Classes/Core/Gestures -I$(THEOS_PROJECT_DIR)/Classes/Core/Models -I$(THEOS_PROJECT_DIR)/Classes/Core/Player -I$(THEOS_PROJECT_DIR)/Classes/Core/Settings -I$(THEOS_PROJECT_DIR)/Classes/Core/Utils -I$(THEOS_PROJECT_DIR)/Classes/Core/Welcome -I$(THEOS_PROJECT_DIR)/Classes/UI -I$(THEOS_PROJECT_DIR)/Classes/UI/Cells -I$(THEOS_PROJECT_DIR)/Classes/UI/ViewControllers -I$(THEOS_PROJECT_DIR)/Classes/UI/Views -I$(THEOS_PROJECT_DIR)/Vendor -I$(THEOS_PROJECT_DIR)/Sources -I$(THEOS_PROJECT_DIR)/Sources/MediaKit
 uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/AFNetworking
 uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/FMDB
 uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/GCDWebServer
@@ -21,7 +21,6 @@ uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/LNPopup/LNPopupController
 uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/LNPopup/LNPopupController/LNPopupController
 uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/LNPopup/LNPopupController/LNPopupController/Private
 uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/Lottie
-uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/MobileFFmpeg
 uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/Others
 uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/SDWebImage
 

@@ -1,26 +1,29 @@
 #import <UIKit/UIKit.h>
 #import <substrate.h>
+#import <HBLog.h>
+#import <rootless.h>
 #import <YouTubeHeader/YTIPivotBarRenderer.h>
 #import <YouTubeHeader/YTIPivotBarSupportedRenderers.h>
 #import <YouTubeHeader/YTIPivotBarItemRenderer.h>
 #import <YouTubeHeader/YTAppViewController.h>
 #import <YouTubeHeader/YTPageStyleController.h>
-#import <YouTubeHeader/YTPlaybackConfig.h>
 #import <YouTubeHeader/YTPlayerViewController.h>
 #import <YouTubeHeader/YTMainAppVideoPlayerOverlayViewController.h>
 #import <YouTubeHeader/YTAppDelegate.h>
 #import <YouTubeHeader/YTLocalPlaybackController.h>
 #import <YouTubeHeader/YTHeaderContentComboViewController.h>
-#import <YouTubeHeader/YTRefactoredHeaderContentComboViewController.h>
 #import <YouTubeHeader/YTInlineMutedPlaybackWatchController.h>
-#import <YouTubeHeader/YTAppViewController.h>
+#import <YouTubeHeader/YTCommonColorPalette.h>
+#import "Classes/UI/ViewControllers/DownloadsPagerVC.h"
+#import "Classes/Core/Player/PlayerManager.h"
+#import "Classes/Core/Utils/Statistics.h"
 
 @interface YTPivotBarView : UIView
 - (void)setRenderer:(YTIPivotBarRenderer *)renderer;
 @end
 
 @interface YTSettingsViewController : UIViewController
-- (void)setSectionItems:(id)items forCategory:(id)category title:(id)title icon:(id)icon titleDescription:(id)titleDescription headerHidden:(BOOL)headerHidden;
+- (void)setSectionItems:(id)items forCategory:(NSInteger)category title:(NSString *)title icon:(YTIIcon *)icon titleDescription:(NSString *)titleDescription headerHidden:(BOOL)headerHidden;
 @end
 
 @interface DownloadsPagerVC : UIViewController
@@ -59,158 +62,246 @@
 @end
 
 @interface YTAppDelegate : UIResponder
-- (BOOL)application:(id)application didFinishLaunchingWithOptions:(id)options;
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)options;
 @end
 
 @interface YTLocalPlaybackController : NSObject
-- (id)currentVideoID;
+- (NSString *)currentVideoID;
 @end
 
 @interface Statistics : NSObject
 + (void)update:(id)arg1;
 @end
 
+static BOOL UYouIsEnabled(NSString *key) {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:key];
+}
+
 %hook YTPivotBarView
 
 - (void)setRenderer:(YTIPivotBarRenderer *)renderer {
-    %orig(renderer);
-    
-    // Add uYou tab to pivot bar
     if (renderer) {
-        YTIPivotBarSupportedRenderers *uYouTab = [%c(YTIPivotBarRenderer) pivotSupportedRenderersWithBrowseId:@"FEuYou" title:@"uYou" iconType:123];
-        if (uYouTab) {
-            NSMutableArray *items = [renderer itemsArray];
-            if (items) {
-                NSMutableArray *mutableItems = [items mutableCopy];
-                [mutableItems addObject:uYouTab];
-                [renderer setItemsArray:mutableItems];
+        NSMutableArray *items = [renderer itemsArray];
+        if (items) {
+            NSDictionary *hideMap = @{
+                @"hideShortsTab": @"FEshorts",
+                @"hideCreateTab": @"FEuploads",
+                @"hideExploreTab": @"FEexplore",
+                @"hideSubscriptionsTab": @"FEsubscriptions",
+                @"hideLibraryTab": @"FElibrary",
+                @"hideTrendingTab": @"FEtrending"
+            };
+            for (NSString *key in hideMap) {
+                if (UYouIsEnabled(key)) {
+                    NSString *pid = hideMap[key];
+                    NSUInteger idx = [items indexOfObjectPassingTest:^BOOL(YTIPivotBarSupportedRenderers *obj, NSUInteger idx, BOOL *stop) {
+                        NSString *a = [[obj pivotBarItemRenderer] pivotIdentifier];
+                        NSString *b = [[obj pivotBarIconOnlyItemRenderer] pivotIdentifier];
+                        return [a isEqualToString:pid] || [b isEqualToString:pid];
+                    }];
+                    if (idx != NSNotFound) [items removeObjectAtIndex:idx];
+                }
+            }
+            if (!UYouIsEnabled(@"hideUYouTab")) {
+                BOOL alreadyHasUYou = NO;
+                for (YTIPivotBarSupportedRenderers *obj in items) {
+                    NSString *a = [[obj pivotBarItemRenderer] pivotIdentifier];
+                    NSString *b = [[obj pivotBarIconOnlyItemRenderer] pivotIdentifier];
+                    if ([a isEqualToString:@"com.miro.uyou"] || [b isEqualToString:@"com.miro.uyou"]) { alreadyHasUYou = YES; break; }
+                }
+                if (!alreadyHasUYou) {
+                    YTIPivotBarSupportedRenderers *uYouTab = [%c(YTIPivotBarRenderer) pivotSupportedRenderersWithBrowseId:@"com.miro.uyou" title:@"uYou" iconType:2];
+                    if (uYouTab) [items addObject:uYouTab];
+                }
             }
         }
     }
+    %orig(renderer);
 }
 
 %end
 
 %hook YTSettingsViewController
 
-- (void)setSectionItems:(id)items forCategory:(id)category title:(id)title icon:(id)icon titleDescription:(id)titleDescription headerHidden:(BOOL)headerHidden {
-    %orig(items, category, title, icon, titleDescription, headerHidden);
-    
-    // Add uYou section to settings
-    if ([title isEqualToString:@"General"]) {
-        // Add uYou settings section
+- (void)setSectionItems:(NSMutableArray *)sectionItems forCategory:(NSInteger)category title:(NSString *)title icon:(YTIIcon *)icon titleDescription:(NSString *)titleDescription headerHidden:(BOOL)headerHidden {
+    NSMutableArray *origItems = sectionItems;
+    if ((category == 1 || category == 4) && sectionItems) {
+        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"uYouLocalization" ofType:@"bundle"];
+        NSBundle *locBundle = bundlePath ? [NSBundle bundleWithPath:bundlePath] : nil;
+        NSString *uYouTitle = locBundle ? [locBundle localizedStringForKey:@"uYouSettings" value:@"Show uYou settings" table:@"Localizable"] : @"Show uYou settings";
+        YTSettingsSectionItem *uYouItem = nil;
+        if (category == 1) {
+            uYouItem = [%c(YTSettingsSectionItem) itemWithTitle:uYouTitle accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL(YTSettingsCell *cell, NSUInteger arg1) {
+                UIViewController *vc = [[%c(SettingsVC) alloc] init];
+                if (vc) [self pushViewController:vc];
+                return YES;
+            }];
+        } else {
+            uYouItem = [%c(YTSettingsSectionItem) itemWithTitle:uYouTitle titleDescription:nil accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL(YTSettingsCell *cell, NSUInteger arg1) {
+                UIViewController *vc = [[%c(SettingsVC) alloc] init];
+                if (vc) [self pushViewController:vc];
+                return YES;
+            }];
+        }
+        if (uYouItem) {
+            NSMutableArray *newItems = [sectionItems mutableCopy];
+            [newItems addObject:uYouItem];
+            origItems = newItems;
+        }
     }
+    %orig(origItems, category, title, icon, titleDescription, headerHidden);
 }
 
 %end
 
 %hook YTHeaderContentComboViewController
-
 - (void)viewDidLoad {
     %orig;
-    // Customize player header - hide unwanted buttons, add uYou buttons
-    // Hide: remix, share, clip, etc.
-    // Add: download, quality, speed, loop buttons
+    @try {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hideUYouButton"]) {
+            for (UIView *v in self.view.subviews) {
+                if ([v.accessibilityIdentifier containsString:@"uYou"] || [NSStringFromClass(v.class) containsString:@"uYou"]) v.hidden = YES;
+            }
+        }
+    } @catch (id e) {}
 }
-
 %end
 
 %hook YTRefactoredHeaderContentComboViewController
-
 - (void)viewDidLoad {
     %orig;
-    // Same customization for refactored header
+    @try {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hideUYouButton"]) {
+            for (UIView *v in self.view.subviews) {
+                if ([v.accessibilityIdentifier containsString:@"uYou"] || [NSStringFromClass(v.class) containsString:@"uYou"]) v.hidden = YES;
+            }
+        }
+    } @catch (id e) {}
 }
-
 %end
 
 %hook YTAppViewController
-
 - (void)closeMiniPlayer {
+    @try { [[%c(PlayerManager) sharedInstance] setSource:nil]; } @catch (id e) {}
     %orig;
-    // Handle mini player close - cleanup uYou state
 }
-
 %end
 
 %hook YTPageStyleController
-
-+ (void)updatePageStyles {
-    %orig;
-    // Disable shorts tab, enable uYou page styles
-    // Hide shorts shelf, enable uYou tabs
-}
-
++ (void)updatePageStyles { %orig; }
 %end
 
 %hook YTInlineMutedPlaybackWatchController
-
-- (void)startPlayback {
-    %orig;
-    // Handle muted playback start - uYou quality/speed settings
-}
-
+- (void)startPlayback { %orig; }
 %end
 
 %hook YTPlaybackConfig
-
-- (void)setStartPlayback:(id)arg1 {
-    %orig(arg1);
-    // Apply uYou playback settings (quality, speed, codec)
-}
-
+- (void)setStartPlayback:(id)arg1 { %orig(arg1); }
 %end
 
 %hook YTPlayerViewController
-
-- (void)updatePlayerViewWithActivePlayerOverlay {
-    %orig;
-    // Update player overlay with uYou controls
-}
-
+- (void)updatePlayerViewWithActivePlayerOverlay { %orig; }
 %end
 
 %hook YTMainAppVideoPlayerOverlayViewController
-
-- (void)mediaTime {
-    %orig;
-    // uYou media time tracking
-}
-
-- (void)setMediaTime:(id)arg1 {
-    %orig(arg1);
-    // uYou media time setting
-}
-
+- (void)mediaTime { %orig; }
+- (void)setMediaTime:(id)arg1 { %orig(arg1); }
 %end
 
 %hook YTAppDelegate
-
-- (BOOL)application:(id)application didFinishLaunchingWithOptions:(id)options {
-    BOOL result = %orig(application, options);
-    // Initialize uYou on app launch
-    return result;
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)options {
+    BOOL r = %orig(application, options);
+    @try {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showedWelcomeVC"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"automaticallyCheckForUpdates"];
+    } @catch (id e) {}
+    return r;
 }
-
 %end
 
 %hook YTLocalPlaybackController
-
-- (id)currentVideoID {
-    id result = %orig;
-    // uYou video ID tracking for downloads
-    return result;
-}
-
+- (NSString *)currentVideoID { return %orig; }
 %end
 
 %hook Statistics
++ (void)update:(id)arg1 { %orig(arg1); @try { [[%c(Statistics) sharedStatistics] recordDownloadStarted]; } @catch (id e) {} }
+%end
 
-+ (void)update:(id)arg1 {
-    %orig(arg1);
-    // uYou statistics tracking
+%hook UIViewController
+- (UITraitCollection *)traitCollection {
+    @try { return %orig; } @catch (NSException *e) { return [UITraitCollection currentTraitCollection]; }
 }
+- (void)traitCollectionDidChange:(UITraitCollection *)prev {
+    %orig(prev);
+    @try { if (%c(DownloadsPagerVC)) UYouRefreshAppearance(); } @catch (id e) {}
+}
+%end
 
+%hook HAMPlayerInternal
+- (void)play {
+    @try { dispatch_async(dispatch_get_main_queue(), ^{ [[%c(PlayerManager) sharedInstance] pause]; }); } @catch (id e) {}
+    %orig;
+}
+%end
+
+%hook SSBouncyButton
+- (void)beginShrinkAnimation {}
+- (void)beginEnlargeAnimation {}
+%end
+
+%hook YTCommonColorPalette
+- (UIColor *)brandBackgroundSolid {
+    BOOL dark = NO;
+    if ([self respondsToSelector:@selector(pageStyle)]) dark = (self.pageStyle == 1);
+    else dark = (UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+    return dark ? [UIColor colorWithRed:0.05882352941176471 green:0.05882352941176471 blue:0.05882352941176471 alpha:1.0] : %orig;
+}
+%end
+
+%hook YTPlayerViewController
+- (id)varispeedController {
+    id c = %orig;
+    if (!c && [self respondsToSelector:@selector(overlayManager)]) {
+        @try {
+            id mgr = [self overlayManager];
+            if (mgr && [mgr respondsToSelector:@selector(varispeedController)]) c = [mgr varispeedController];
+        } @catch (id e) {}
+    }
+    return c;
+}
+%end
+
+%hook GOODialogView
+- (UIImageView *)imageView {
+    UIImageView *iv = %orig;
+    @try {
+        UILabel *lab = [self valueForKey:@"titleLabel"];
+        if ([lab.text containsString:@"uYou\n"]) {
+            NSString *bp = [[NSBundle mainBundle] pathForResource:@"uYouBundle" ofType:@"bundle"];
+            NSBundle *b = [NSBundle bundleWithPath:bp];
+            NSString *ip = [b pathForResource:@"icon_clipped" ofType:@"png"];
+            UIImage *icon = [UIImage imageWithContentsOfFile:ip];
+            if (icon) {
+                CGSize sz = CGSizeMake(30, 30);
+                UIGraphicsBeginImageContextWithOptions(sz, NO, 0);
+                [icon drawInRect:CGRectMake(0, 0, sz.width, sz.height)];
+                UIImage *resized = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+                [iv setImage:resized];
+            }
+        }
+    } @catch (id e) {}
+    return iv;
+}
+- (UILabel *)titleLabel {
+    UILabel *lab = %orig;
+    @try {
+        if ([lab.text containsString:@"uYou\n"] && ![lab.text containsString:@"uYou\n\n"]) {
+            lab.text = [lab.text stringByReplacingOccurrencesOfString:@"uYou\n" withString:@"uYou\n\n"];
+        }
+    } @catch (id e) {}
+    return lab;
+}
 %end
 
 %ctor {
