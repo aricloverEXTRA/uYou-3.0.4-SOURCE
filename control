@@ -1,14 +1,14 @@
-Package: com.miro.uyou
-Name: uYou
+Package: com.miro.uyouunofficial
+Name: uYou Unofficial
 Depends: firmware (>=13.0), mobilesubstrate, com.miro.uyouimport
-Conflicts: com.miro.easyyt, com.miro.ytnoshorts, com.ps.noytpremium, com.ps.youarethere, com.miro.uyourootless
+Conflicts: com.miro.easyyt, com.miro.ytnoshorts, com.ps.noytpremium, com.ps.youarethere, com.miro.uyourootless, com.miro.uyou
 Depiction: https://miro92.com/repo/depictions/?p=com.miro.uyou
-Description: Enhance Your YouTube Experience (Unofficial 3.0.6 — baked download pipeline + localization)
-Maintainer: MiRO <tweaks_support@miro92.com> (Unofficial build by uYouEnhanced)
+Description: Enhance Your YouTube Experience
+Maintainer: aricloverEXTRA
 Author: MiRO <tweaks_support@miro92.com>
 Section: Tweaks
 Tag: purpose::extension, compatible_min::ios13
 Icon: file:////Library/Application Support/uYouBundle.bundle/icon_clipped.png
 Architecture: iphoneos-arm
-Version: 3.0.6-unofficial
+Version: 3.0.6
 Installed-Size: 31212
