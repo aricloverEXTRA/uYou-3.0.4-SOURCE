@@ -25,19 +25,32 @@
 
 - (void)recordDownloadStarted {
     _totalDownloads++;
+    _lastDownloadDate = [NSDate date];
+    [[NSUserDefaults standardUserDefaults] setInteger:_totalDownloads forKey:@"uYouStat_total"];
 }
 
 - (void)recordDownloadCompletedWithBytes:(int64_t)bytes {
     _completedDownloads++;
     _totalBytesDownloaded += bytes;
+    _lastDownloadDate = [NSDate date];
+    [[NSUserDefaults standardUserDefaults] setInteger:_completedDownloads forKey:@"uYouStat_completed"];
 }
 
 - (void)recordDownloadFailed {
     _failedDownloads++;
+    [[NSUserDefaults standardUserDefaults] setInteger:_failedDownloads forKey:@"uYouStat_failed"];
 }
 
 - (void)updateAverageSpeed:(double)speed {
     _averageSpeed = speed;
+    [[NSUserDefaults standardUserDefaults] setDouble:speed forKey:@"uYouStat_speed"];
+}
+
++ (void)update:(id)arg1 {
+    // Called from hooked Statistics update: — record generic event
+    @try {
+        [[self sharedStatistics] recordDownloadStarted];
+    } @catch (id e) {}
 }
 
 - (NSDictionary *)statisticsDictionary {

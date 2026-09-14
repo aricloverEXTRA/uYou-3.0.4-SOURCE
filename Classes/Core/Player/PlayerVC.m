@@ -38,12 +38,20 @@
 
 - (void)enterFullscreen {
     _isFullscreen = YES;
-    // Implementation for fullscreen
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)exitFullscreen {
     _isFullscreen = NO;
-    // Implementation for exiting fullscreen
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)close {
+    [super viewDidLoad];
+    [[PlayerManager sharedManager] setSource:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

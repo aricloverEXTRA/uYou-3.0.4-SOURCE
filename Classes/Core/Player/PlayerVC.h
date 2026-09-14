@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithMediaInformation:(MediaInformation *)mediaInfo;
 - (void)enterFullscreen;
 - (void)exitFullscreen;
+- (void)close;
 
 @end
 

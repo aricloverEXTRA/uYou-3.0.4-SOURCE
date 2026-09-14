@@ -20,12 +20,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) BOOL isPlaying;
 @property (nonatomic, assign, readonly) CMTime currentTime;
 @property (nonatomic, assign, readonly) CMTime duration;
+@property (nonatomic, strong) id currentVideo;
+@property (nonatomic, copy) NSString *playerID;
 
 + (instancetype)sharedManager;
++ (instancetype)sharedInstance;
 
 - (void)playWithMediaInformation:(MediaInformation *)mediaInfo;
 - (void)playWithURL:(NSURL *)url;
 - (void)pause;
+- (void)play;
+- (BOOL)isPlaying;
+- (BOOL)isPaused;
+- (void)setSource:(id)source;
+- (float)progress;
 - (void)seekToTime:(CMTime)time completionHandler:(void (^)(BOOL finished))completion;
 - (void)setRate:(float)rate;
 - (void)setVolume:(float)volume;

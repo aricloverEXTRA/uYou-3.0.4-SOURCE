@@ -19,6 +19,11 @@
     });
     return shared;
 }
++ (instancetype)sharedInstance { return [self sharedManager]; }
+- (void)play { [_player play]; _isPlaying = YES; }
+- (BOOL)isPlaying { return _isPlaying; }
+- (BOOL)isPaused { return !_isPlaying; }
+- (void)setSource:(id)source { _currentVideo = source; if (!source) [self pause]; }
 
 - (instancetype)init {
     self = [super init];
@@ -56,8 +61,21 @@
 }
 
 - (void)pause {
+    if (isnan([self progress])) return;
     [_player pause];
     _isPlaying = NO;
+}
+
+- (float)progress {
+    if (!_currentItem) return NAN;
+    CMTime dur = _currentItem.duration;
+    if (CMTIME_IS_INVALID(dur) || dur.value == 0) return NAN;
+    CMTime cur = _player.currentTime;
+    if (CMTIME_IS_INVALID(cur)) return NAN;
+    double d = CMTimeGetSeconds(dur);
+    double c = CMTimeGetSeconds(cur);
+    if (d <= 0 || isnan(d) || isnan(c)) return NAN;
+    return (float)(c / d);
 }
 
 - (void)seekToTime:(CMTime)time completionHandler:(void (^)(BOOL finished))completion {

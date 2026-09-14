@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSDate *lastDownloadDate;
 
 + (instancetype)sharedStatistics;
++ (void)update:(id)arg1;
 
 - (void)recordDownloadStarted;
 - (void)recordDownloadCompletedWithBytes:(int64_t)bytes;

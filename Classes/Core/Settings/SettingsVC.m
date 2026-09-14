@@ -36,11 +36,29 @@
 }
 
 - (void)clearDownloading {
-    // Implementation
+    NSString *docs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject;
+    NSString *dbPath = [docs stringByAppendingPathComponent:@"uyoudb.sqlite"];
+    @try {
+        [[NSFileManager defaultManager] removeItemAtPath:dbPath error:nil];
+        // Also clear in-memory queue if DownloadsManager is available
+        Class dm = NSClassFromString(@"DownloadsManager");
+        if (dm && [dm respondsToSelector:@selector(sharedInstance)]) {
+            id mgr = [dm performSelector:@selector(sharedInstance)];
+            if ([mgr respondsToSelector:@selector(setDownloadingItems:)]) [mgr performSelector:@selector(setDownloadingItems:) withObject:@[]];
+        }
+    } @catch (id e) {}
+    [_tableView reloadData];
 }
 
 - (void)clearDownloaded {
-    // Implementation
+    NSString *docs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject;
+    NSString *dlDir = [docs stringByAppendingPathComponent:@"uYouDownloads"];
+    @try {
+        for (NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dlDir error:nil]) {
+            [[NSFileManager defaultManager] removeItemAtPath:[dlDir stringByAppendingPathComponent:f] error:nil];
+        }
+    } @catch (id e) {}
+    [_tableView reloadData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
