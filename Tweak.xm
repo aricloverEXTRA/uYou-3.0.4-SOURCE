@@ -5,79 +5,35 @@
 #import <YouTubeHeader/YTIPivotBarRenderer.h>
 #import <YouTubeHeader/YTIPivotBarSupportedRenderers.h>
 #import <YouTubeHeader/YTIPivotBarItemRenderer.h>
-#import <YouTubeHeader/YTAppViewController.h>
-#import <YouTubeHeader/YTPageStyleController.h>
-#import <YouTubeHeader/YTPlayerViewController.h>
-#import <YouTubeHeader/YTMainAppVideoPlayerOverlayViewController.h>
-#import <YouTubeHeader/YTAppDelegate.h>
-#import <YouTubeHeader/YTLocalPlaybackController.h>
-#import <YouTubeHeader/YTHeaderContentComboViewController.h>
 #import <YouTubeHeader/YTCommonColorPalette.h>
-
-@interface YTInlineMutedPlaybackWatchController : NSObject
-- (void)startPlayback;
-@end
+#import <YouTubeHeader/YTSettingsSectionItem.h>
+#import <YouTubeHeader/YTSettingsCell.h>
 #import "Classes/UI/ViewControllers/DownloadsPagerVC.h"
 #import "Classes/Core/Player/PlayerManager.h"
 #import "Classes/Core/Utils/Statistics.h"
+#import "Classes/Core/Settings/SettingsVC.h"
 
-@interface YTPivotBarView : UIView
-- (void)setRenderer:(YTIPivotBarRenderer *)renderer;
-@end
-
-@interface YTSettingsViewController : UIViewController
-- (void)setSectionItems:(id)items forCategory:(NSInteger)category title:(NSString *)title icon:(YTIIcon *)icon titleDescription:(NSString *)titleDescription headerHidden:(BOOL)headerHidden;
-@end
-
-@interface DownloadsPagerVC : UIViewController
-- (instancetype)init;
-@end
-
-@interface YTHeaderContentComboViewController : UIViewController
-@end
-
-@interface YTRefactoredHeaderContentComboViewController : UIViewController
-@end
-
-@interface YTAppViewController : UIViewController
-- (void)closeMiniPlayer;
-@end
-
-@interface YTPageStyleController : NSObject
-+ (void)updatePageStyles;
-@end
-
-@interface YTPlaybackConfig : NSObject
-- (void)setStartPlayback:(id)arg1;
-@end
-
-@interface YTPlayerViewController : UIViewController
-- (void)updatePlayerViewWithActivePlayerOverlay;
-@end
-
-@interface YTMainAppVideoPlayerOverlayViewController : UIViewController
-- (void)mediaTime;
-- (void)setMediaTime:(id)arg1;
-@end
-
-@interface YTAppDelegate : UIResponder
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)options;
-@end
-
-@interface YTLocalPlaybackController : NSObject
-- (NSString *)currentVideoID;
-@end
-
-@interface Statistics : NSObject
-+ (void)update:(id)arg1;
-@end
+// Forward declares for classes not in YouTubeHeader or already defined in Classes/
+@class YTInlineMutedPlaybackWatchController;
+@class YTHeaderContentComboViewController;
+@class YTRefactoredHeaderContentComboViewController;
+@class YTAppViewController;
+@class YTPageStyleController;
+@class YTPlayerViewController;
+@class YTMainAppVideoPlayerOverlayViewController;
+@class YTAppDelegate;
+@class YTLocalPlaybackController;
+@class GOODialogView;
+@class HAMPlayerInternal;
+@class SSBouncyButton;
+@class YTSettingsViewController;
+@class YTIPivotBarView;
 
 static BOOL UYouIsEnabled(NSString *key) {
     return [[NSUserDefaults standardUserDefaults] boolForKey:key];
 }
 
 %hook YTPivotBarView
-
 - (void)setRenderer:(YTIPivotBarRenderer *)renderer {
     if (renderer) {
         NSMutableArray *items = [renderer itemsArray];
@@ -117,11 +73,9 @@ static BOOL UYouIsEnabled(NSString *key) {
     }
     %orig(renderer);
 }
-
 %end
 
 %hook YTSettingsViewController
-
 - (void)setSectionItems:(NSMutableArray *)sectionItems forCategory:(NSInteger)category title:(NSString *)title icon:(YTIIcon *)icon titleDescription:(NSString *)titleDescription headerHidden:(BOOL)headerHidden {
     NSMutableArray *origItems = sectionItems;
     if ((category == 1 || category == 4) && sectionItems) {
@@ -130,15 +84,15 @@ static BOOL UYouIsEnabled(NSString *key) {
         NSString *uYouTitle = locBundle ? [locBundle localizedStringForKey:@"uYouSettings" value:@"Show uYou settings" table:@"Localizable"] : @"Show uYou settings";
         YTSettingsSectionItem *uYouItem = nil;
         if (category == 1) {
-            uYouItem = [%c(YTSettingsSectionItem) itemWithTitle:uYouTitle accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL(YTSettingsCell *cell, NSUInteger arg1) {
+            uYouItem = [%c(YTSettingsSectionItem) itemWithTitle:uYouTitle accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL(id cell, NSUInteger arg1) {
                 UIViewController *vc = [[%c(SettingsVC) alloc] init];
-                if (vc) [self pushViewController:vc];
+                if (vc) [(id)self pushViewController:vc];
                 return YES;
             }];
         } else {
-            uYouItem = [%c(YTSettingsSectionItem) itemWithTitle:uYouTitle titleDescription:nil accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL(YTSettingsCell *cell, NSUInteger arg1) {
+            uYouItem = [%c(YTSettingsSectionItem) itemWithTitle:uYouTitle titleDescription:nil accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL(id cell, NSUInteger arg1) {
                 UIViewController *vc = [[%c(SettingsVC) alloc] init];
-                if (vc) [self pushViewController:vc];
+                if (vc) [(id)self pushViewController:vc];
                 return YES;
             }];
         }
@@ -150,7 +104,6 @@ static BOOL UYouIsEnabled(NSString *key) {
     }
     %orig(origItems, category, title, icon, titleDescription, headerHidden);
 }
-
 %end
 
 %hook YTHeaderContentComboViewController
@@ -181,7 +134,7 @@ static BOOL UYouIsEnabled(NSString *key) {
 
 %hook YTAppViewController
 - (void)closeMiniPlayer {
-    @try { [[%c(PlayerManager) sharedInstance] setSource:nil]; } @catch (id e) {}
+    @try { [[%c(PlayerManager) sharedInstance] setSource:(id)nil]; } @catch (id e) {}
     %orig;
 }
 %end
@@ -277,7 +230,7 @@ static BOOL UYouIsEnabled(NSString *key) {
         UILabel *lab = [self valueForKey:@"titleLabel"];
         if ([lab.text containsString:@"uYou\n"]) {
             NSString *bp = [[NSBundle mainBundle] pathForResource:@"uYouUnofficial" ofType:@"bundle"];
-            if (!bp) bp = [[NSBundle mainBundle] pathForResource:@"uYouBundle" ofType:@"bundle"]; // fallback for old installs
+            if (!bp) bp = [[NSBundle mainBundle] pathForResource:@"uYouBundle" ofType:@"bundle"];
             NSBundle *b = [NSBundle bundleWithPath:bp];
             NSString *ip = [b pathForResource:@"icon_clipped" ofType:@"png"];
             UIImage *icon = [UIImage imageWithContentsOfFile:ip];
