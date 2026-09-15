@@ -2,6 +2,7 @@
 #import <substrate.h>
 #import <HBLog.h>
 #import <rootless.h>
+#import <dlfcn.h>
 #import <YouTubeHeader/YTIPivotBarRenderer.h>
 #import <YouTubeHeader/YTIPivotBarSupportedRenderers.h>
 #import <YouTubeHeader/YTIPivotBarItemRenderer.h>
@@ -180,7 +181,12 @@ static BOOL UYouIsEnabled(NSString *key) {
 }
 - (void)traitCollectionDidChange:(UITraitCollection *)prev {
     %orig(prev);
-    @try { if (%c(DownloadsPagerVC)) UYouRefreshAppearance(); } @catch (id e) {}
+    @try {
+        if (%c(DownloadsPagerVC)) {
+            void (*fn)(void) = (void (*)(void))dlsym(RTLD_DEFAULT, "UYouRefreshAppearance");
+            if (fn) fn();
+        }
+    } @catch (id e) {}
 }
 %end
 
