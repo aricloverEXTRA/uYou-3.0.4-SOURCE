@@ -12,8 +12,11 @@
 #import <YouTubeHeader/YTAppDelegate.h>
 #import <YouTubeHeader/YTLocalPlaybackController.h>
 #import <YouTubeHeader/YTHeaderContentComboViewController.h>
-#import <YouTubeHeader/YTInlineMutedPlaybackWatchController.h>
 #import <YouTubeHeader/YTCommonColorPalette.h>
+
+@interface YTInlineMutedPlaybackWatchController : NSObject
+- (void)startPlayback;
+@end
 #import "Classes/UI/ViewControllers/DownloadsPagerVC.h"
 #import "Classes/Core/Player/PlayerManager.h"
 #import "Classes/Core/Utils/Statistics.h"
@@ -42,10 +45,6 @@
 
 @interface YTPageStyleController : NSObject
 + (void)updatePageStyles;
-@end
-
-@interface YTInlineMutedPlaybackWatchController : NSObject
-- (void)startPlayback;
 @end
 
 @interface YTPlaybackConfig : NSObject
