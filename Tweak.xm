@@ -13,16 +13,9 @@
 #import "Classes/Core/Utils/Statistics.h"
 #import "Classes/Core/Settings/SettingsVC.h"
 
-// Forward declares for classes not in YouTubeHeader or already defined in Classes/
+
 @class YTInlineMutedPlaybackWatchController;
-@class YTHeaderContentComboViewController;
 @class YTRefactoredHeaderContentComboViewController;
-@class YTAppViewController;
-@class YTPageStyleController;
-@class YTPlayerViewController;
-@class YTMainAppVideoPlayerOverlayViewController;
-@class YTAppDelegate;
-@class YTLocalPlaybackController;
 @class GOODialogView;
 @class HAMPlayerInternal;
 @class SSBouncyButton;
@@ -86,13 +79,13 @@ static BOOL UYouIsEnabled(NSString *key) {
         if (category == 1) {
             uYouItem = [%c(YTSettingsSectionItem) itemWithTitle:uYouTitle accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL(id cell, NSUInteger arg1) {
                 UIViewController *vc = [[%c(SettingsVC) alloc] init];
-                if (vc) [(id)self pushViewController:vc];
+                if (vc) [(UINavigationController *)[(id)self navigationController] pushViewController:vc animated:YES];
                 return YES;
             }];
         } else {
             uYouItem = [%c(YTSettingsSectionItem) itemWithTitle:uYouTitle titleDescription:nil accessibilityIdentifier:nil detailTextBlock:nil selectBlock:^BOOL(id cell, NSUInteger arg1) {
                 UIViewController *vc = [[%c(SettingsVC) alloc] init];
-                if (vc) [(id)self pushViewController:vc];
+                if (vc) [(UINavigationController *)[(id)self navigationController] pushViewController:vc animated:YES];
                 return YES;
             }];
         }
@@ -111,7 +104,8 @@ static BOOL UYouIsEnabled(NSString *key) {
     %orig;
     @try {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hideUYouButton"]) {
-            for (UIView *v in self.view.subviews) {
+            UIView *rootView = [(UIViewController *)self view];
+            for (UIView *v in rootView.subviews) {
                 if ([v.accessibilityIdentifier containsString:@"uYou"] || [NSStringFromClass(v.class) containsString:@"uYou"]) v.hidden = YES;
             }
         }
@@ -124,7 +118,8 @@ static BOOL UYouIsEnabled(NSString *key) {
     %orig;
     @try {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"hideUYouButton"]) {
-            for (UIView *v in self.view.subviews) {
+            UIView *rootView = [(UIViewController *)self view];
+            for (UIView *v in rootView.subviews) {
                 if ([v.accessibilityIdentifier containsString:@"uYou"] || [NSStringFromClass(v.class) containsString:@"uYou"]) v.hidden = YES;
             }
         }
@@ -134,7 +129,7 @@ static BOOL UYouIsEnabled(NSString *key) {
 
 %hook YTAppViewController
 - (void)closeMiniPlayer {
-    @try { [[%c(PlayerManager) sharedInstance] setSource:(id)nil]; } @catch (id e) {}
+    @try { id pm = [%c(PlayerManager) sharedInstance]; if ([pm respondsToSelector:@selector(setSource:)]) [pm performSelector:@selector(setSource:) withObject:nil]; } @catch (id e) {}
     %orig;
 }
 %end
@@ -213,10 +208,10 @@ static BOOL UYouIsEnabled(NSString *key) {
 %hook YTPlayerViewController
 - (id)varispeedController {
     id c = %orig;
-    if (!c && [self respondsToSelector:@selector(overlayManager)]) {
+    if (!c && [(id)self respondsToSelector:@selector(overlayManager)]) {
         @try {
-            id mgr = [self overlayManager];
-            if (mgr && [mgr respondsToSelector:@selector(varispeedController)]) c = [mgr varispeedController];
+            id mgr = [(id)self performSelector:@selector(overlayManager)];
+            if (mgr && [mgr respondsToSelector:@selector(varispeedController)]) c = [mgr performSelector:@selector(varispeedController)];
         } @catch (id e) {}
     }
     return c;
@@ -227,7 +222,7 @@ static BOOL UYouIsEnabled(NSString *key) {
 - (UIImageView *)imageView {
     UIImageView *iv = %orig;
     @try {
-        UILabel *lab = [self valueForKey:@"titleLabel"];
+        UILabel *lab = [(id)self valueForKey:@"titleLabel"];
         if ([lab.text containsString:@"uYou\n"]) {
             NSString *bp = [[NSBundle mainBundle] pathForResource:@"uYouUnofficial" ofType:@"bundle"];
             if (!bp) bp = [[NSBundle mainBundle] pathForResource:@"uYouBundle" ofType:@"bundle"];
