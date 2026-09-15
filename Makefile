@@ -4,7 +4,7 @@ INSTALL_TARGET_PROCESSES = YouTube
 
 include $(THEOS)/makefiles/common.mk
 
-TWEAK_NAME = uYou
+TWEAK_NAME = uYouUnofficial
 
 # Core source files (Classes + baked pipeline)
 uYou_FILES = $(wildcard Classes/**/*.m) $(wildcard Classes/**/*.mm) $(filter-out Vendor/LNPopup/LNPopupControllerExample/% Vendor/Lottie/Example% Vendor/Lottie/Example-Swift/% Vendor/Lottie/lottie-ios/% Vendor/Lottie/MacOS_Viewer/% Vendor/SDWebImage/Examples/% Vendor/SDWebImage/Tests/% Vendor/AFNetworking/Example/% Vendor/AFNetworking/Tests/% Vendor/AFNetworking/UIKit+AFNetworking/% Vendor/GCDWebServer/Tests/% Vendor/FMDB/Tests/% Vendor/SDWebImage/NSBezierPath+SDRoundedCorners.m Vendor/SDWebImage/NSButton+WebCache.m Vendor/SDWebImage/NSImage+Compatibility.m Vendor/SDWebImage/SDAnimatedImageRep.m Vendor/SDWebImage/SDWebImageMapKit/% Vendor/SDWebImage/MKAnnotationView+WebCache.m Vendor/SDWebImage/FLAnimatedImage/%,$(wildcard Vendor/**/*.m) $(wildcard Vendor/**/*.mm))
@@ -27,7 +27,7 @@ uYou_CFLAGS += -I$(THEOS_PROJECT_DIR)/Vendor/SDWebImage
 uYou_FRAMEWORKS = UIKit Foundation AVFoundation AVKit Photos CoreMotion VideoToolbox Security MediaPlayer
 uYou_LIBRARIES = bz2 c++ iconv z sqlite3
 
-# Bundle is installed via Layout/ to match original deb path: /Library/Application Support/uYouBundle.bundle
+# Bundle is installed via Layout/ to match original deb path: /Library/Application Support/uYouUnofficial.bundle
 # Theos EMBED_BUNDLES would place it under /Library/MobileSubstrate/DynamicLibraries — wrong location
 
 

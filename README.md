@@ -1,15 +1,23 @@
-# uYou 3.0.4 - Reverse Engineered Source
+# uYou 3.0.6 (Unofficial) — Reverse Engineered Source
 
-This is a clean, compilable reverse-engineered version of uYou 3.0.4, organized for maintainability while preserving identical functionality to the original MiRO92 release.
+Unofficial continuation of uYou 3.0.4 with native 21.29.3+ fixes. Not endorsed or made by MiRO92.
+
+- **uYou tab** — native `YTPivotBarView` hook (`com.miro.uyouunofficial`, `DownloadsPagerVC`) — no badge hacks
+- **SABR fallback** — on-device SABR engine (`Classes/Core/Downloads/UYTSABR.xm` for YouTube 21.29.3+ where innertube returns `-1002`
+- **FFmpegKitNext** — `Classes/Core/MediaKit/UYTMediaKit.h/.m` wrapper (FFmpegKitNext-only, no MobileFFmpeg fallback) + `Vendor/ffmpegkit.framework` + `libav*`
+- **Rebrand** — `uYouUnofficial` dylib + `uYouUnofficial.bundle` + `com.miro.uyouunofficial`, Settings footer disclaimer, `3.0.6-unofficial`
+
+Original uYou 3.0.4 by MiRO92 — this is a clean, compilable reverse-engineered base, now with the above Unofficial additions.
 
 ## Project Structure
 
 ```
-uYou-3.0.4-src/
+uYou-3.0.4-src-main/
 ├── Classes/
 │   ├── Core/
-│   │   ├── Downloads/      # Download management system
+│   │   ├── Downloads/      # Download management + UYTSABR (SABR fallback, 21.29.3+)
 │   │   ├── Gestures/       # Custom gesture recognizers
+│   │   ├── MediaKit/       # UYTMediaKit (FFmpegKitNext wrapper)
 │   │   ├── Models/         # Data models
 │   │   ├── Player/         # Video/audio playback
 │   │   ├── Settings/       # Settings UI framework
@@ -17,23 +25,26 @@ uYou-3.0.4-src/
 │   │   └── Welcome/        # Welcome/onboarding flow
 │   └── UI/
 │       ├── Cells/          # UITableViewCell subclasses
-│       ├── ViewControllers/# View controllers
+│       ├── ViewControllers/# View controllers (DownloadsPagerVC)
 │       └── Views/          # Custom UIView subclasses
-├── Vendor/                 # Third-party dependencies (headers only)
-├── Resources/              # uYouBundle.bundle
-├── Layout/                 # PreferenceLoader plists
-├── Makefile                # Theos build configuration
-├── control                 # Debian package control
-├── uYou.plist              # MobileSubstrate filter
-└── Tweak.xm                # Entry point
+├── Vendor/                 # Third-party deps + ffmpegkit.framework + libav*
+├── Layout/Library/Application Support/
+│   ├── uYouUnofficial.bundle/   # was uYouBundle.bundle
+│   └── uYouLocalization.bundle/ # kept as-is
+├── Makefile                # TWEAK_NAME = uYouUnofficial, TARGET 15.0
+├── control                 # com.miro.uyouunofficial, uYou Unofficial 3.0.6
+├── uYouUnofficial.plist    # MobileSubstrate filter (was uYou.plist)
+└── Tweak.xm                # Entry point (YTPivotBarView → com.miro.uyouunofficial)
 ```
 
 ## Building
 
 ### Prerequisites
 - Theos installed
-- iOS SDK (13.0+)
-- Vendor dependencies (see below)
+- **iOS 15+ SDK recommended** (Xcode 15+ / iOS 15 SDK or newer; `TARGET = iphone:clang:18.6:15.0`)
+- Vendor dependencies (see below) — all compatible with iOS 15+ SDK as-is
+
+> **Note:** Deployment target is a minimum. Vendors targeting iOS 8–11 (AFNetworking, SDWebImage, Lottie 2.5.3, etc.) compile clean on iOS 15+ SDK with no changes. Lottie 2.5.3 (ObjC) is kept intentionally — no Swift bridging needed; bundle JSONs remain compatible.
 
 ### Build Commands
 
@@ -48,18 +59,28 @@ make package-all
 make clean-all
 ```
 
+### UYTSABR (21.29.3+ SABR fallback)
+
+Stitchable 3-part engine for YouTube 21.29.3+ (`-1002` fallback):
+
+```bash
+cat Classes/Core/Downloads/UYTSABR_Part1.xm Classes/Core/Downloads/UYTSABR_Part2.xm Classes/Core/Downloads/UYTSABR_Part3.xm > Classes/Core/Downloads/UYTSABR.xm
+# Wildcard uYou_FILES picks up UYTSABR.xm automatically; remove _Part*.xm after
+```
+
 ### Vendor Dependencies
 
-The following third-party libraries are required. Place their headers in `Vendor/` and link against their static libraries:
+Vendored in `Vendor/` (all iOS 15+ SDK compatible as-is, no updates needed):
 
-- **AFNetworking** - Networking
-- **FMDB** - SQLite wrapper
-- **GCDWebServer** - Local HTTP server
-- **JGProgressHUD** - Progress HUD
-- **LNPopup** - Popup controller
-- **Lottie** - Animation rendering
-- **SDWebImage** - Image loading/caching
-- **Others** - BRYSerialAnimationQueue, JTMaterialSwitch, PKYStepper, SSBouncyButton, STPopup
+- **AFNetworking 4.0.1** (iOS 9+) — Networking
+- **FMDB 2.7.8** (iOS 11+) — SQLite wrapper
+- **GCDWebServer 3.5.4** (iOS 8+) — Local HTTP server
+- **JGProgressHUD 2.2** (iOS 8+) — Progress HUD (uses LOTAnimationView)
+- **LNPopup** — Popup controller
+- **Lottie 2.5.3** (iOS 8+, ObjC) — Animation rendering (kept intentionally; iOS 18 era would be 4.4.3 Swift, but 2.5.3 is stable on iOS 15+ SDK, no Swift bridging needed)
+- **SDWebImage 5.12.0** (iOS 9+) — Image loading/caching
+- **ffmpegkit.framework + libavcodec/libavdevice/libavfilter/libavformat/libavutil/libswresample/libswscale** — FFmpegKitNext (iOS 12+)
+- **Others** — BRYSerialAnimationQueue, JTMaterialSwitch, PKYStepper, SSBouncyButton, STPopup
 
 ## Architecture Notes
 
@@ -88,15 +109,17 @@ The Makefile supports building for:
 | `SettingsVC` | Settings UI controller |
 | `DownloadsPagerVC` | Tabbed downloads interface |
 
-## Differences from Original
+## Differences from Original (Unofficial 3.0.6)
 
-This reverse-engineered version:
-- ✅ Compiles cleanly with modern clang
-- ✅ Uses proper Objective-C conventions
-- ✅ Organized for maintainability
-- ✅ Includes all original functionality
-- ⚠️ Vendor implementations are stubs (link against original libs)
-- ⚠️ Some complex features need implementation (FFmpeg, etc.)
+This Unofficial build:
+- ✅ Compiles cleanly with modern clang (iOS 15+ SDK recommended)
+- ✅ Uses proper Objective-C conventions, organized for maintainability
+- ✅ Includes all original uYou 3.0.4 functionality
+- ✅ **uYou tab** — native pivot (`com.miro.uyouunofficial`) with `DownloadsPagerVC`
+- ✅ **SABR fallback** — on-device SABR for YouTube 21.29.3+ (`-1002` / empty URLs)
+- ✅ **FFmpegKitNext** — `UYTMediaKit` wrapper + embedded `ffmpegkit`/`libav*` frameworks
+- ✅ **Rebrand** — `uYouUnofficial` dylib/bundle, `com.miro.uyouunofficial`, `3.0.6-unofficial`, Settings disclaimer (“Not endorsed or made by MiRO92”)
+- ⚠️ Vendor implementations are stubs (link against original libs where needed)
 
 ## License
 

@@ -107,10 +107,10 @@ static BOOL UYouIsEnabled(NSString *key) {
                 for (YTIPivotBarSupportedRenderers *obj in items) {
                     NSString *a = [[obj pivotBarItemRenderer] pivotIdentifier];
                     NSString *b = [[obj pivotBarIconOnlyItemRenderer] pivotIdentifier];
-                    if ([a isEqualToString:@"com.miro.uyou"] || [b isEqualToString:@"com.miro.uyou"]) { alreadyHasUYou = YES; break; }
+                    if ([a isEqualToString:@"com.miro.uyouunofficial"] || [b isEqualToString:@"com.miro.uyouunofficial"]) { alreadyHasUYou = YES; break; }
                 }
                 if (!alreadyHasUYou) {
-                    YTIPivotBarSupportedRenderers *uYouTab = [%c(YTIPivotBarRenderer) pivotSupportedRenderersWithBrowseId:@"com.miro.uyou" title:@"uYou" iconType:2];
+                    YTIPivotBarSupportedRenderers *uYouTab = [%c(YTIPivotBarRenderer) pivotSupportedRenderersWithBrowseId:@"com.miro.uyouunofficial" title:@"uYou" iconType:2];
                     if (uYouTab) [items addObject:uYouTab];
                 }
             }
@@ -277,7 +277,8 @@ static BOOL UYouIsEnabled(NSString *key) {
     @try {
         UILabel *lab = [self valueForKey:@"titleLabel"];
         if ([lab.text containsString:@"uYou\n"]) {
-            NSString *bp = [[NSBundle mainBundle] pathForResource:@"uYouBundle" ofType:@"bundle"];
+            NSString *bp = [[NSBundle mainBundle] pathForResource:@"uYouUnofficial" ofType:@"bundle"];
+            if (!bp) bp = [[NSBundle mainBundle] pathForResource:@"uYouBundle" ofType:@"bundle"]; // fallback for old installs
             NSBundle *b = [NSBundle bundleWithPath:bp];
             NSString *ip = [b pathForResource:@"icon_clipped" ofType:@"png"];
             UIImage *icon = [UIImage imageWithContentsOfFile:ip];

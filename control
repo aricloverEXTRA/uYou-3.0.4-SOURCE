@@ -8,7 +8,7 @@ Maintainer: aricloverEXTRA
 Author: MiRO <tweaks_support@miro92.com>
 Section: Tweaks
 Tag: purpose::extension, compatible_min::ios13
-Icon: file:////Library/Application Support/uYouBundle.bundle/icon_clipped.png
+Icon: file:////Library/Application Support/uYouUnofficial.bundle/icon_clipped.png
 Architecture: iphoneos-arm
 Version: 3.0.6
 Installed-Size: 31212
