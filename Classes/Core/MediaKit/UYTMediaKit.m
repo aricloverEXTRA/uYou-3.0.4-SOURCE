@@ -6,16 +6,12 @@
 static NSInteger UYTFFCachedBackend = -1; // -1 = not probed yet
 
 static void UYTFFProbe(void) {
-    // Re-probe whenever we haven't found a backend yet: uYou.dylib (which
-    // provides MobileFFmpeg) may not be loaded at the first probe (e.g. if a
-    // conversion is attempted during our %ctor before uYou finishes loading).
-    // Caching "none" permanently would break conversion forever after an
-    // early probe. Only cache a positive result.
-    if (UYTFFCachedBackend != -1 && UYTFFCachedBackend != UYTFFBackendNone) return;
+    // Only probe once for FFmpegKitNext - we embed the frameworks in the app bundle
+    // so they should always be available at @executable_path/Frameworks/
+    if (UYTFFCachedBackend != -1) return;
 
-    // ffmpegkit.framework hard-links every av*/sw* library, and its install
-    // names use @rpath which the host app may not resolve. Preload each
-    // dependency by explicit path (dependencies first) so the shell loads.
+    // FFmpegKitNext frameworks are embedded in the app bundle at @executable_path/Frameworks/
+    // Preload each dependency by explicit path (dependencies first) so the shell loads.
     const char *libs[] = {
         "libavutil", "libswresample", "libavcodec",
         "libavformat", "libavdevice", "libavfilter", "libswscale",
@@ -29,9 +25,13 @@ static void UYTFFProbe(void) {
     dlopen("@executable_path/Frameworks/ffmpegkit.framework/ffmpegkit",
            RTLD_LAZY | RTLD_GLOBAL);
 
-    if (objc_getClass("FFmpegKit")) UYTFFCachedBackend = UYTFFBackendKitNext;
-    else if (objc_getClass("MobileFFmpeg")) UYTFFCachedBackend = UYTFFBackendMobile;
-    else UYTFFCachedBackend = UYTFFBackendNone;
+    // Only support FFmpegKitNext - MobileFFmpeg is legacy and removed
+    if (objc_getClass("FFmpegKit")) {
+        UYTFFCachedBackend = UYTFFBackendKitNext;
+    } else {
+        UYTFFCachedBackend = UYTFFBackendNone;
+        NSLog(@"[UYTMediaKit] FFmpegKitNext not found - ffmpeg operations will be unavailable");
+    }
 }
 
 NSInteger UYTFFActiveBackend(void) {
@@ -42,45 +42,37 @@ NSInteger UYTFFActiveBackend(void) {
 BOOL UYTFFRun(NSArray<NSString *> *arguments) {
     UYTFFProbe();
 
-    Class kitClass = Nil;
-    BOOL isKitNext = (UYTFFCachedBackend == UYTFFBackendKitNext);
-    if (UYTFFCachedBackend == UYTFFBackendNone) return NO;
-    kitClass = objc_getClass(isKitNext ? "FFmpegKit" : "MobileFFmpeg");
+    if (UYTFFCachedBackend != UYTFFBackendKitNext) return NO;
+    
+    Class kitClass = objc_getClass("FFmpegKit");
     if (!kitClass) return NO;
 
     @try {
-        if (isKitNext) {
-            id session = ((id (*)(id, SEL, NSArray *))objc_msgSend)(
-                kitClass, @selector(executeWithArguments:), arguments);
-            if (!session) return NO;
+        id session = ((id (*)(id, SEL, NSArray *))objc_msgSend)(
+            kitClass, @selector(executeWithArguments:), arguments);
+        if (!session) return NO;
 
-            // ReturnCode object with -isSuccess, or a plain numeric exit code.
-            if ([session respondsToSelector:@selector(getReturnCode)]) {
-                id rc = ((id (*)(id, SEL))objc_msgSend)(session, @selector(getReturnCode));
-                if ([rc respondsToSelector:@selector(isSuccess)]) {
-                    return ((BOOL (*)(id, SEL))objc_msgSend)(rc, @selector(isSuccess));
-                }
-                if ([rc respondsToSelector:@selector(getIntValue)]) {
-                    return ((long (*)(id, SEL))objc_msgSend)(rc, @selector(getIntValue)) == 0;
-                }
-                if ([rc respondsToSelector:@selector(intValue)]) {
-                    return [rc intValue] == 0;
-                }
-                return NO;
+        // ReturnCode object with -isSuccess, or a plain numeric exit code.
+        if ([session respondsToSelector:@selector(getReturnCode)]) {
+            id rc = ((id (*)(id, SEL))objc_msgSend)(session, @selector(getReturnCode));
+            if ([rc respondsToSelector:@selector(isSuccess)]) {
+                return ((BOOL (*)(id, SEL))objc_msgSend)(rc, @selector(isSuccess));
             }
-            // Older wrapper shape: session state string.
-            if ([session respondsToSelector:@selector(getState)]) {
-                NSString *state = [NSString stringWithFormat:@"%@",
-                    ((id (*)(id, SEL))objc_msgSend)(session, @selector(getState))];
-                return [state containsString:@"COMPLETED"];
+            if ([rc respondsToSelector:@selector(getIntValue)]) {
+                return ((long (*)(id, SEL))objc_msgSend)(rc, @selector(getIntValue)) == 0;
+            }
+            if ([rc respondsToSelector:@selector(intValue)]) {
+                return [rc intValue] == 0;
             }
             return NO;
         }
-
-        // MobileFFmpeg: class method returning the int exit code.
-        int rc = ((int (*)(id, SEL, NSArray *))objc_msgSend)(
-            kitClass, @selector(executeWithArguments:), arguments);
-        return rc == 0;
+        // Older wrapper shape: session state string.
+        if ([session respondsToSelector:@selector(getState)]) {
+            NSString *state = [NSString stringWithFormat:@"%@",
+                ((id (*)(id, SEL))objc_msgSend)(session, @selector(getState))];
+            return [state containsString:@"COMPLETED"];
+        }
+        return NO;
     } @catch (NSException *e) {
         NSLog(@"[UYTMediaKit] command failed (%@): %@", arguments.firstObject ?: @"", e);
         return NO;

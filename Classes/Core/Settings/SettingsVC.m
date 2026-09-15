@@ -96,7 +96,13 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     FRPSection *frpSection = _settings.sections[section];
-    return frpSection.footer;
+    NSString *footer = frpSection.footer;
+    // Append Unofficial disclaimer to last section footer (uYou 3.0.6 Unofficial)
+    if (section == _settings.sections.count - 1) {
+        NSString *disclaimer = @"\nuYou 3.0.6 (Unofficial) — Not endorsed or made by MiRO92. Unofficial build with 21.29.3+ SABR/FFmpegKitNext fixes.";
+        footer = footer.length ? [footer stringByAppendingString:disclaimer] : [disclaimer substringFromIndex:1];
+    }
+    return footer;
 }
 
 @end
