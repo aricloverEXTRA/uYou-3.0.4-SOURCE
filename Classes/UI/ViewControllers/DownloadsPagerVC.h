@@ -17,6 +17,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewPager:(id)viewPager didChangeTabToIndex:(NSUInteger)idx fromTabIndex:(NSUInteger)fromIdx;
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 void UYouRefreshAppearance(void);
+#ifdef __cplusplus
+}
+#endif
 
 NS_ASSUME_NONNULL_END
