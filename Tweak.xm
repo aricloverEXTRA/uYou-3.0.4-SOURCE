@@ -13,6 +13,8 @@
 #import "Classes/Core/Utils/Statistics.h"
 #import "Classes/Core/Settings/SettingsVC.h"
 
+void UYouRefreshAppearance(void);
+
 
 @class YTInlineMutedPlaybackWatchController;
 @class YTRefactoredHeaderContentComboViewController;
